@@ -1,4 +1,4 @@
-package com.epilot.files;
+package com.epilot.files.auth;
 
 import java.io.IOException;
 
