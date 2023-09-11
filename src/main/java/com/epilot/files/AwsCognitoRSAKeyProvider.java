@@ -14,13 +14,12 @@ public class AwsCognitoRSAKeyProvider implements RSAKeyProvider {
     private final URL jwksUrl;
     private final JwkProvider provider;
     
-    public AwsCognitoRSAKeyProvider() {
-        String url = "https://cognito-idp.eu-central-1.amazonaws.com/eu-central-1_ASauSlhLe/.well-known/jwks.json";
+    public AwsCognitoRSAKeyProvider(String wellKnownUrl) {
         try {
-            jwksUrl = new URL(url);
+            jwksUrl = new URL(wellKnownUrl);
             provider = new JwkProviderBuilder(jwksUrl).build();
         } catch (MalformedURLException e) {
-            throw new RuntimeException(String.format("Invalid URL provided, URL=%s", url));
+            throw new RuntimeException(String.format("Invalid URL provided: %s", e.getMessage()));
         }
     }
 

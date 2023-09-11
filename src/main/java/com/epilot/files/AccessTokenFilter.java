@@ -7,6 +7,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -18,6 +20,9 @@ import com.auth0.jwt.interfaces.RSAKeyProvider;
 
 @Component
 public class AccessTokenFilter extends OncePerRequestFilter {
+	
+	@Autowired
+	private Environment env;
 	
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -40,7 +45,8 @@ public class AccessTokenFilter extends OncePerRequestFilter {
 			System.out.println("JWT Token does not begin with Bearer String");
 		}
     
-    RSAKeyProvider keyProvider = new AwsCognitoRSAKeyProvider();
+		String jwksUrl = env.getProperty("jwks.url");
+    RSAKeyProvider keyProvider = new AwsCognitoRSAKeyProvider(jwksUrl);
     Algorithm algorithm = Algorithm.RSA256(keyProvider);
     
     JWTVerifier jwtVerifier = JWT.require(algorithm).build();
